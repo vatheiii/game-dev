@@ -5,7 +5,7 @@ A colorful, cartoon-style 3D endless runner for Windows PC. You play a cat who i
 Built with **Unity 6.3 LTS (6000.3.8f1)** and **C#**.
 
 - **Gameplay video:** [Game play recording](https://drive.google.com/file/d/1sC2UHsbvB1QfB5_loq1LleETfbu_1E18/view?usp=sharing)
-- **Playable build (Windows):** [ADD DOWNLOAD LINK HERE]
+- **Playable build (Windows):** [Download Kitty Surfer for Windows (64-bit)](https://github.com/vatheiii/game-dev/releases/download/kitty-surfer-v0.1.0/KittySurfer-Windows-v0.1.0.zip)
 
 ---
 
