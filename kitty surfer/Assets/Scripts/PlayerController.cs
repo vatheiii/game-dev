@@ -7,11 +7,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float laneSpacing = 3.075f;
     [SerializeField] private float laneChangeSpeed = 10f;
     [SerializeField] private float jumpSpeed = 5.5f;
+    [SerializeField] private float fallGravityMultiplier = 1f;
     [SerializeField] private LayerMask groundLayers;
     [SerializeField] private Transform followCamera;
 
+    private const float FullSpeedDistance = 1350f;
+    private const float MaxSpeed = 10f;
+
     private Rigidbody body;
     private float centerLaneX;
+    private float startZ;
     private int lane;
     private bool jumpPressed;
 
@@ -19,6 +24,7 @@ public class PlayerController : MonoBehaviour
     {
         body = GetComponent<Rigidbody>();
         centerLaneX = transform.position.x;
+        startZ = body.position.z;
     }
 
     private void Update()
@@ -42,13 +48,23 @@ public class PlayerController : MonoBehaviour
         float targetX = centerLaneX + lane * laneSpacing;
         float speedToTarget = (targetX - body.position.x) / Time.fixedDeltaTime;
         velocity.x = Mathf.Clamp(speedToTarget, -laneChangeSpeed, laneChangeSpeed);
-        velocity.z = forwardSpeed;
+
+        float distanceTravelled = body.position.z - startZ;
+        float speedProgress = Mathf.Clamp01(distanceTravelled / FullSpeedDistance);
+        // Interpolating squared speeds gives steady acceleration over time.
+        float speedSquared = Mathf.Lerp(forwardSpeed * forwardSpeed, MaxSpeed * MaxSpeed, speedProgress);
+        velocity.z = Mathf.Sqrt(speedSquared);
 
         if (jumpPressed && velocity.y <= 0f &&
             Physics.Raycast(body.position + Vector3.up * 0.15f, Vector3.down,
                 0.21f, groundLayers, QueryTriggerInteraction.Ignore))
         {
             velocity.y = jumpSpeed;
+        }
+        else if (velocity.y < 0f)
+        {
+            // The Rigidbody already applies normal gravity.
+            velocity.y += Physics.gravity.y * (fallGravityMultiplier - 1f) * Time.fixedDeltaTime;
         }
 
         jumpPressed = false;

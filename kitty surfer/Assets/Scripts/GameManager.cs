@@ -1,14 +1,11 @@
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private TMP_Text livesText;
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private TMP_Text bestScoreText;
-    
+    [SerializeField] private UIManager ui;
+    [SerializeField] private PlayerController player;
+    [SerializeField] private GameObject shieldVisual;
 
     private const float HitCooldown = 1.5f;
     private const float UnitsPerPoint = 10f;
@@ -16,37 +13,58 @@ public class GameManager : MonoBehaviour
     private const float FishDuration = 5f;
     private const int FishMultiplier = 2;
     private const float ShieldDuration = 5f;
+    private static bool replayRequested;
     private int lives = 3;
     private float nextDamageTime;
     private float startZ;
     private int score;
     private int bestScore;
+    private bool runStarted;
     private bool isGameOver;
     private int distanceSteps;
     private float multiplierEndTime;
-    private bool multiplierWasActive;
     private float shieldEndTime;
-    private bool shieldWasActive;
 
     private bool IsMultiplierActive => Time.time < multiplierEndTime;
     private bool IsShieldActive => Time.time < shieldEndTime;
-    
-    
 
     private void Start()
     {
-        Time.timeScale = 1f;
-        gameOverPanel.SetActive(false);
+        ui.SetGameOver(false);
         startZ = transform.position.z;
         bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
-        UpdateBestScoreText();
-        UpdateLivesText();
-        UpdateScoreText();
+        ui.SetBestScore(bestScore);
+        ui.SetLives(lives);
+        ui.SetScore(score);
+        RefreshPowerUps();
+
+        if (replayRequested)
+        {
+            replayRequested = false;
+            StartRun();
+        }
+        else
+        {
+            player.enabled = false;
+            Time.timeScale = 0f;
+            ui.SetStartScreen(true);
+        }
+    }
+
+    public void StartRun()
+    {
+        if (runStarted)
+            return;
+
+        runStarted = true;
+        ui.SetStartScreen(false);
+        player.enabled = true;
+        Time.timeScale = 1f;
     }
 
     private void Update()
     {
-        if (isGameOver)
+        if (!runStarted || isGameOver)
             return;
 
         int steps = Mathf.FloorToInt((transform.position.z - startZ) / UnitsPerPoint);
@@ -55,25 +73,16 @@ public class GameManager : MonoBehaviour
             int multiplier = IsMultiplierActive ? FishMultiplier : 1;
             score += (steps - distanceSteps) * multiplier;
             distanceSteps = steps;
-            UpdateScoreText();
+            ui.SetScore(score);
         }
 
-        if (IsMultiplierActive != multiplierWasActive)
-        {
-            multiplierWasActive = IsMultiplierActive;
-            UpdateScoreText();
-        }
-        
-        if (IsShieldActive != shieldWasActive)
-        {
-            shieldWasActive = IsShieldActive;
-            UpdateLivesText();
-        }
+        RefreshPowerUps();
     }
+
     private void OnCollisionEnter(Collision collision)
     {
         Collider obstacle = collision.collider;
-        if (isGameOver || !obstacle.CompareTag("Obstacle"))
+        if (!runStarted || isGameOver || !obstacle.CompareTag("Obstacle"))
             return;
 
         // Let the cat pass the obstacle after contact.
@@ -83,7 +92,7 @@ public class GameManager : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isGameOver)
+        if (!runStarted || isGameOver)
             return;
 
         if (other.CompareTag("Fish"))
@@ -103,37 +112,39 @@ public class GameManager : MonoBehaviour
         }
     }
 
-        private void TakeHit()
+    private void TakeHit()
     {
         if (IsShieldActive || Time.time < nextDamageTime)
             return;
 
         lives--;
         nextDamageTime = Time.time + HitCooldown;
-        UpdateLivesText();
+        ui.SetLives(lives);
 
         if (lives == 0)
         {
             isGameOver = true;
             SaveBestScore();
-            gameOverPanel.SetActive(true);
+            shieldVisual.SetActive(false);
+            ui.SetPowerUps(0f, 0f, FishMultiplier);
+            ui.SetGameOver(true);
+            player.enabled = false;
             Time.timeScale = 0f;
         }
     }
 
-    
-    private void UpdateLivesText()
+    private void RefreshPowerUps()
     {
-        string shield = IsShieldActive ? "  Shield" : "";
-        livesText.text = $"Lives: {lives}{shield}";
+        float now = Time.time;
+        float shieldSeconds = Mathf.Clamp(shieldEndTime - now, 0f, ShieldDuration);
+        float multiplierSeconds = Mathf.Clamp(multiplierEndTime - now, 0f, FishDuration);
+        bool showShield = shieldSeconds > 0f;
+        if (shieldVisual.activeSelf != showShield)
+            shieldVisual.SetActive(showShield);
+
+        ui.SetPowerUps(shieldSeconds, multiplierSeconds, FishMultiplier);
     }
 
-    private void UpdateScoreText()
-    {
-        string bonus = IsMultiplierActive ? $"  x{FishMultiplier}" : "";
-        scoreText.text = $"Score: {score}{bonus}";
-    }
-    
     private void SaveBestScore()
     {
         if (score <= bestScore)
@@ -142,12 +153,7 @@ public class GameManager : MonoBehaviour
         bestScore = score;
         PlayerPrefs.SetInt(BestScoreKey, bestScore);
         PlayerPrefs.Save();
-        UpdateBestScoreText();
-    }
-
-    private void UpdateBestScoreText()
-    {
-        bestScoreText.text = $"Best: {bestScore}";
+        ui.SetBestScore(bestScore);
     }
 
     public void QuitGame()
@@ -162,6 +168,7 @@ public class GameManager : MonoBehaviour
 
     public void Replay()
     {
+        replayRequested = true;
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
