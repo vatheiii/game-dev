@@ -6,6 +6,7 @@ Built with **Unity 6.3 LTS (6000.3.8f1)** and **C#**.
 
 - **Gameplay video:** [Game play recording](https://drive.google.com/file/d/1sC2UHsbvB1QfB5_loq1LleETfbu_1E18/view?usp=sharing)
 - **Playable build (Windows):** [Download Kitty Surfer for Windows (64-bit)](https://github.com/vatheiii/game-dev/releases/download/kitty-surfer-v0.1.0/KittySurfer-Windows-v0.1.0.zip)
+- **Playable build (macOS):** [Download Kitty Surfer for Mac (Apple silicon and Intel)](https://github.com/vatheiii/game-dev/releases/download/kitty-surfer-v0.1.0/KittySurfer-macOS-v0.1.0.zip)
 
 ---
 
@@ -77,9 +78,10 @@ The cat runs forward automatically across 3 lanes.
 
 ### Option A: Play the build
 
-1. Download the Windows build from the link at the top of this README.
-2. Extract the zip.
-3. Run the `.exe` and click **Play**.
+1. Download the ZIP for your platform from the top of this README.
+2. Extract the entire ZIP.
+3. On Windows, run `KittySurfer.exe`. On macOS, open `KittySurfer.app` in Finder.
+4. Click **Play**.
 
 ### Option B: Run from source in Unity
 
