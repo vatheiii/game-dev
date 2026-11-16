@@ -14,19 +14,19 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
-  m_Fog: 0
-  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  m_FogMode: 3
+  m_Fog: 1
+  m_FogColor: {r: 0.69, g: 0.79, b: 0.76, a: 1}
+  m_FogMode: 1
   m_FogDensity: 0.01
-  m_LinearFogStart: 0
-  m_LinearFogEnd: 300
+  m_LinearFogStart: 24
+  m_LinearFogEnd: 80
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 63c7f212f60aadc47945b935dc40e7c0, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -2345,7 +2345,7 @@ Camera:
   m_GameObject: {fileID: 1611220047}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 1
   m_BackGroundColor: {r: 0.52941173, g: 0.80784315, b: 0.92156863, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -2895,6 +2895,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7591421109747733693, guid: bdb6c27da22534f80a8918407e28222d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1269224627}
+    - targetCorrespondingSourceObject: {fileID: 7591421109747733693, guid: bdb6c27da22534f80a8918407e28222d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 350000101}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7019798684344431546, guid: bdb6c27da22534f80a8918407e28222d, type: 3}
       insertIndex: -1
@@ -3440,6 +3443,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3d037696b00a845ac93a7772b484ec84, type: 3}
+--- !u!1001 &350000100
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1930353064}
+    m_Modifications: []
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 60e17832ca564d01959030b96fa5687b, type: 3}
+--- !u!4 &350000101 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1001, guid: 60e17832ca564d01959030b96fa5687b, type: 3}
+  m_PrefabInstance: {fileID: 350000100}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
