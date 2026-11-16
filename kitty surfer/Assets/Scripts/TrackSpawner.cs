@@ -34,10 +34,10 @@ public class TrackSpawner : MonoBehaviour
         {
             Transform oldest = sections.Dequeue();
             oldest.position += Vector3.forward * (SectionLength * SectionCount);
-            foreach (Collider obstacle in oldest.GetComponentsInChildren<Collider>(true))
+                foreach (Transform child in oldest.GetComponentsInChildren<Transform>(true))
             {
-                if (obstacle.CompareTag("Obstacle"))
-                    obstacle.enabled = true;
+                    if (child.CompareTag("Fish") || child.CompareTag("Shield") || child.CompareTag("Bomb"))
+                    child.gameObject.SetActive(true);
             }
             sections.Enqueue(oldest);
         }
