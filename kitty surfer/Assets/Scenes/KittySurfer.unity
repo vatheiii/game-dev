@@ -861,8 +861,6 @@ MonoBehaviour:
   replayButton: {fileID: 423499988}
   startScreen: {fileID: 340000011}
   playButton: {fileID: 340000013}
-  startQuitButton: {fileID: 340000018}
-  game: {fileID: 161825541}
 --- !u!1 &340000006
 GameObject:
   m_ObjectHideFlags: 0
@@ -960,7 +958,55 @@ PrefabInstance:
   m_Modification:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 4617554498563305654, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4617554498563305654, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value:
+      objectReference: {fileID: 161825541}
+    - target: {fileID: 4617554498563305654, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 4617554498563305654, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: StartRun
+      objectReference: {fileID: 0}
+    - target: {fileID: 4617554498563305654, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4617554498563305654, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207466991444887521, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207466991444887521, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value:
+      objectReference: {fileID: 161825541}
+    - target: {fileID: 6207466991444887521, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207466991444887521, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207466991444887521, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207466991444887521, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 928617403400311201, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
@@ -1122,17 +1168,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340000014}
   m_CullTransparentMesh: 1
---- !u!114 &340000018 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6207466991444887521, guid: fbc9d69ebfd0c0342a17ad22c8d82194, type: 3}
-  m_PrefabInstance: {fileID: 340000010}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!4 &378770066 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9091042374412862250, guid: bdbf811528419b540805cf14dec86df5, type: 3}

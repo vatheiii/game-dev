@@ -14,29 +14,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Button replayButton;
     [SerializeField] private GameObject startScreen;
     [SerializeField] private Button playButton;
-    [SerializeField] private Button startQuitButton;
-    [SerializeField] private GameManager game;
 
     private int lastShieldTenths = -1;
     private int lastMultiplierTenths = -1;
-
-    private void OnEnable()
-    {
-        if (game == null)
-            return;
-
-        playButton.onClick.AddListener(game.StartRun);
-        startQuitButton.onClick.AddListener(game.QuitGame);
-    }
-
-    private void OnDisable()
-    {
-        if (game == null)
-            return;
-
-        playButton.onClick.RemoveListener(game.StartRun);
-        startQuitButton.onClick.RemoveListener(game.QuitGame);
-    }
 
     public void SetLives(int lives) => livesText.text = $"Lives: {lives}";
     public void SetScore(int score) => scoreText.text = $"Score: {score}";

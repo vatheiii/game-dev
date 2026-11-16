@@ -42,10 +42,12 @@ public class PlayerController : MonoBehaviour
             jumpPressed = true;
     }
 
+    internal float GetLaneX(int lane) => centerLaneX + lane * laneSpacing;
+
     private void FixedUpdate()
     {
         Vector3 velocity = body.linearVelocity;
-        float targetX = centerLaneX + lane * laneSpacing;
+        float targetX = GetLaneX(lane);
         float speedToTarget = (targetX - body.position.x) / Time.fixedDeltaTime;
         velocity.x = Mathf.Clamp(speedToTarget, -laneChangeSpeed, laneChangeSpeed);
 

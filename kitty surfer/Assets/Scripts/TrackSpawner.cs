@@ -1,4 +1,5 @@
 using UnityEngine;
+using static TrackLayouts;
 
 public class TrackSpawner : MonoBehaviour
 {
@@ -17,63 +18,25 @@ public class TrackSpawner : MonoBehaviour
     private const int MediumDistance = 250;
     private const int HardDistance = 600;
 
-    private const int Left = -1;
-    private const int Middle = 0;
-    private const int Right = 1;
+    private const int LaneCount = Right - Left + 1;
 
-    private enum Layout { Easy, MirroredEasy, Medium, Hard }
-    private enum Piece { Log, Boulder, MovingLog, Fish, Shield, Bomb }
-
-    private static readonly (int Z, int Lane, Piece Piece)[] Easy =
-    {
-        (8, Middle, Piece.Log),
-        (22, Right, Piece.Boulder), (22, Left, Piece.Fish),
-        (36, Left, Piece.Log), (36, Right, Piece.Log),
-        (50, Middle, Piece.Boulder), (50, Right, Piece.Shield),
-        (64, Right, Piece.Boulder), (64, Middle, Piece.Log),
-        (78, Left, Piece.Log), (78, Right, Piece.Log),
-        (92, Middle, Piece.Log)
-    };
-
-    private static readonly (int Z, int Lane, Piece Piece)[] Medium =
-    {
-        (8, Left, Piece.Log), (8, Right, Piece.Fish),
-        (20, Middle, Piece.Boulder), (20, Right, Piece.Log),
-        (32, Right, Piece.Boulder), (32, Left, Piece.Shield),
-        (44, Middle, Piece.MovingLog),
-        (56, Left, Piece.Boulder), (56, Right, Piece.Bomb),
-        (68, Middle, Piece.Log), (68, Right, Piece.Boulder),
-        (80, Left, Piece.Boulder), (80, Right, Piece.Log),
-        (92, Middle, Piece.Log)
-    };
-
-    private static readonly (int Z, int Lane, Piece Piece)[] Hard =
-    {
-        (5, Middle, Piece.Boulder),
-        (15, Left, Piece.Boulder), (15, Middle, Piece.Log), (15, Right, Piece.Shield),
-        (27, Left, Piece.Log), (27, Right, Piece.Boulder),
-        (37, Left, Piece.Boulder), (37, Right, Piece.Bomb),
-        (49, Middle, Piece.MovingLog),
-        (59, Right, Piece.Boulder),
-        (65, Right, Piece.Fish),
-        (71, Left, Piece.Boulder), (71, Right, Piece.Log),
-        (81, Left, Piece.Log), (81, Right, Piece.Boulder),
-        (93, Left, Piece.Log), (93, Middle, Piece.Boulder)
-    };
+    private static int previousRunEasyLaneOffset = -1;
 
     // Unity restores these fields when scripts reload during Play Mode.
+    private PlayerController playerController;
     private Transform[] sections;
     private Transform[] activeLayouts;
     private int oldestSectionIndex;
     private int nextSectionDistance;
+    private int easyLaneOffset;
     private Layout previousLayout;
     private int consecutiveLayoutCount;
 
     private void Start()
     {
-        if (player == null || firstSection == null)
+        if (player == null || !player.TryGetComponent(out playerController) || firstSection == null)
         {
-            Debug.LogError("Assign Player and First Section on TrackSpawner.", this);
+            Debug.LogError("Assign a Player with PlayerController and a First Section on TrackSpawner.", this);
             enabled = false;
             return;
         }
@@ -102,6 +65,10 @@ public class TrackSpawner : MonoBehaviour
         oldestSectionIndex = 0;
         nextSectionDistance = 0;
         consecutiveLayoutCount = 0;
+        easyLaneOffset = previousRunEasyLaneOffset < 0
+            ? Random.Range(0, LaneCount)
+            : (previousRunEasyLaneOffset + Random.Range(1, LaneCount)) % LaneCount;
+        previousRunEasyLaneOffset = easyLaneOffset;
 
         for (int i = 1; i < SectionCount; i++)
         {
@@ -130,25 +97,24 @@ public class TrackSpawner : MonoBehaviour
 
     private void ApplyNextLayout(int sectionIndex)
     {
-        Layout layout = nextSectionDistance == 0 ? Layout.Easy : ChooseLayout(nextSectionDistance);
+        Layout layout = ChooseLayout(nextSectionDistance);
         consecutiveLayoutCount = layout == previousLayout ? consecutiveLayoutCount + 1 : 1;
         previousLayout = layout;
         nextSectionDistance += SectionLength;
 
-        var placements = layout switch
-        {
-            Layout.Medium => Medium,
-            Layout.Hard => Hard,
-            _ => Easy
-        };
+        bool isEasy = layout == Layout.Easy || layout == Layout.MirroredEasy;
 
+        Transform section = sections[sectionIndex];
         GameObject content = new GameObject(layout.ToString());
         // Keep movers inactive until their starting positions have been assigned.
         content.SetActive(false);
-        content.transform.SetParent(sections[sectionIndex], false);
-        foreach (var placement in placements)
+        content.transform.SetParent(section, false);
+        foreach (var placement in TrackLayouts.GetPlacements(layout))
         {
             int lane = layout == Layout.MirroredEasy ? -placement.Lane : placement.Lane;
+            if (isEasy)
+                lane = (lane - Left + easyLaneOffset) % LaneCount + Left;
+
             Transform template = placement.Piece switch
             {
                 Piece.Log => lane == Right ? rightLog : leftLog,
@@ -158,14 +124,11 @@ public class TrackSpawner : MonoBehaviour
                 Piece.Shield => shield,
                 _ => bomb
             };
-            float laneX = lane switch
-            {
-                Left => leftLog.localPosition.x,
-                Right => rightLog.localPosition.x,
-                _ => boulder.localPosition.x
-            };
+            Vector3 lanePosition = section.position;
+            lanePosition.x = playerController.GetLaneX(lane);
+            float localLaneX = section.InverseTransformPoint(lanePosition).x;
             Transform obstacle = Instantiate(template, content.transform, false);
-            obstacle.localPosition = new Vector3(laneX, template.localPosition.y, placement.Z);
+            obstacle.localPosition = new Vector3(localLaneX, template.localPosition.y, placement.Z);
             obstacle.gameObject.SetActive(true);
         }
 

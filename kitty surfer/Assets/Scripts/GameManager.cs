@@ -7,15 +7,19 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PlayerController player;
     [SerializeField] private GameObject shieldVisual;
 
-    private const float HitCooldown = 1.5f;
+    private const float HitCooldown = 1f;
+    private const float HitFlashDuration = 0.15f;
+    private const float HitShieldFadeDuration = 0.2f;
     private const float UnitsPerPoint = 10f;
     private const string BestScoreKey = "BestScore";
     private const float FishDuration = 5f;
     private const int FishMultiplier = 2;
     private const float ShieldDuration = 5f;
+    private static readonly int BaseColor = Shader.PropertyToID("_BaseColor");
+    private static readonly Color HitFlashColor = new Color(1f, 0.34f, 0.27f);
     private static bool replayRequested;
     private int lives = 3;
-    private float nextDamageTime;
+    private float damageBlockedUntil;
     private float startZ;
     private int score;
     private int bestScore;
@@ -24,19 +28,28 @@ public class GameManager : MonoBehaviour
     private int distanceSteps;
     private float multiplierEndTime;
     private float shieldEndTime;
+    private SkinnedMeshRenderer kittyRenderer;
+    private Renderer shieldRenderer;
+    private Color shieldColor;
+    private MaterialPropertyBlock effectColors;
+    private bool hitFlashActive;
 
     private bool IsMultiplierActive => Time.time < multiplierEndTime;
     private bool IsShieldActive => Time.time < shieldEndTime;
 
     private void Start()
     {
+        kittyRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+        shieldRenderer = shieldVisual.GetComponent<Renderer>();
+        shieldColor = shieldRenderer.sharedMaterial.GetColor(BaseColor);
+        effectColors = new MaterialPropertyBlock();
         ui.SetGameOver(false);
         startZ = transform.position.z;
         bestScore = PlayerPrefs.GetInt(BestScoreKey, 0);
         ui.SetBestScore(bestScore);
         ui.SetLives(lives);
         ui.SetScore(score);
-        RefreshPowerUps();
+        RefreshEffects();
 
         if (replayRequested)
         {
@@ -76,7 +89,7 @@ public class GameManager : MonoBehaviour
             ui.SetScore(score);
         }
 
-        RefreshPowerUps();
+        RefreshEffects();
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -114,42 +127,65 @@ public class GameManager : MonoBehaviour
 
     private void TakeHit()
     {
-        if (Time.time < nextDamageTime)
+        if (Time.time < damageBlockedUntil)
             return;
 
         if (IsShieldActive)
         {
             shieldEndTime = 0f;
-            RefreshPowerUps();
+            RefreshEffects();
             return;
         }
 
         lives--;
-        nextDamageTime = Time.time + HitCooldown;
+        damageBlockedUntil = Time.time + HitCooldown;
         ui.SetLives(lives);
 
-        if (lives == 0)
-        {
-            isGameOver = true;
-            SaveBestScore();
-            shieldVisual.SetActive(false);
-            ui.SetPowerUps(0f, 0f, FishMultiplier);
-            ui.SetGameOver(true);
-            player.enabled = false;
-            Time.timeScale = 0f;
-        }
+        isGameOver = lives == 0;
+        RefreshEffects();
+        if (!isGameOver)
+            return;
+
+        SaveBestScore();
+        ui.SetGameOver(true);
+        player.enabled = false;
+        Time.timeScale = 0f;
     }
 
-    private void RefreshPowerUps()
+    private void RefreshEffects()
     {
         float now = Time.time;
-        float shieldSeconds = Mathf.Clamp(shieldEndTime - now, 0f, ShieldDuration);
-        float multiplierSeconds = Mathf.Clamp(multiplierEndTime - now, 0f, FishDuration);
-        bool showShield = shieldSeconds > 0f;
-        if (shieldVisual.activeSelf != showShield)
-            shieldVisual.SetActive(showShield);
+        float recoverySeconds = isGameOver ? 0f : damageBlockedUntil - now;
+        float shieldSeconds = isGameOver ? 0f : Mathf.Clamp(shieldEndTime - now, 0f, ShieldDuration);
+        float multiplierSeconds = isGameOver ? 0f : Mathf.Clamp(multiplierEndTime - now, 0f, FishDuration);
 
+        UpdateHitVisuals(recoverySeconds, shieldSeconds > 0f);
         ui.SetPowerUps(shieldSeconds, multiplierSeconds, FishMultiplier);
+    }
+
+    private void UpdateHitVisuals(float recoverySeconds, bool shieldPickupActive)
+    {
+        bool flash = recoverySeconds > HitCooldown - HitFlashDuration;
+        if (flash != hitFlashActive)
+        {
+            effectColors.SetColor(BaseColor, HitFlashColor);
+            kittyRenderer.SetPropertyBlock(flash ? effectColors : null);
+            hitFlashActive = flash;
+        }
+
+        bool showBubble = shieldPickupActive || recoverySeconds > 0f;
+        if (shieldVisual.activeSelf != showBubble)
+            shieldVisual.SetActive(showBubble);
+
+        if (!showBubble)
+            return;
+
+        Color color = shieldColor;
+        if (!shieldPickupActive)
+            color.a *= Mathf.Clamp01(recoverySeconds / HitShieldFadeDuration);
+
+        effectColors.SetColor(BaseColor, color);
+        shieldRenderer.SetPropertyBlock(effectColors);
     }
 
     private void SaveBestScore()
