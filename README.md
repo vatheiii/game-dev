@@ -22,6 +22,23 @@ Survive in the forest and run as far as you can. Your score goes up the further 
 - **Best score:** Saved locally and shown on the HUD. It only updates when a finished run beats it.
 - **Difficulty:** The cat speeds up the further it runs, and track layouts get tougher at around 250 and 600 units. Layouts are randomized, so each run is different.
 
+---
+
+## How to Play (Quick Tutorial)
+
+1. **Start:** Click **Play** on the start screen. Your cat starts running forward on its own.
+2. **Move:** Press `A` / `Left Arrow` to go left and `D` / `Right Arrow` to go right. There are 3 lanes.
+3. **Jump:** Press `Space` to jump over low obstacles like logs. You cannot jump while already in the air.
+4. **Dodge:** Boulders are too tall to jump, so switch lanes. Moving logs slide across lanes, so time your move.
+5. **Collect:** Run through fish for double score for 5 seconds. Run through gems for a shield that blocks your next hit.
+6. **Avoid bombs:** Touching a bomb costs 1 life, unless your shield blocks it.
+7. **Survive:** You have 3 lives. After a hit you are protected for about 1 second. When you reach 0 lives the run ends.
+8. **Replay:** Click **Replay** to try again and beat your best score.
+
+**Tip:** Your score only goes up with forward distance, so staying alive matters more than chasing every item.
+
+---
+
 ### Items
 
 | Item | Effect |
