@@ -1,6 +1,6 @@
 # Kitty Surfer 
 
-A colorful, cartoon-style 3D endless runner for Windows PC. You play a cat who is lost in a forest and has to fend for itself to survive in the wilderness. Run through the endless forest, avoid obstacles, collect food and power-ups, and travel as far as you can to set a high score.
+A colorful, cartoon-style 3D endless runner for desktop. You play a cat who is lost in a forest and has to fend for itself to survive in the wilderness. Run through the endless forest, avoid obstacles, collect food and power-ups, and travel as far as you can to set a high score.
 
 Built with **Unity 6.3 LTS (6000.3.8f1)** and **C#**.
 
