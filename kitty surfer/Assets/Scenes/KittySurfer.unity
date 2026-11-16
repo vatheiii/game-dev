@@ -517,11 +517,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9121c4bc682017040bd3efed0a380492, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
-  forwardSpeed: 5
+  forwardSpeed: 6.5
   laneSpacing: 3.075
-  laneChangeSpeed: 10
+  laneChangeSpeed: 12.5
   jumpSpeed: 5.5
-  fallGravityMultiplier: 1.8
+  fallGravityMultiplier: 2.1
   groundLayers:
     serializedVersion: 2
     m_Bits: 64
@@ -872,6 +872,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TrackSpawner
   player: {fileID: 161825540}
   firstSection: {fileID: 1930353064}
+  leftLog: {fileID: 1836938817}
+  rightLog: {fileID: 1943800121}
+  boulder: {fileID: 1269224627}
+  movingLog: {fileID: 1943800111}
+  fish: {fileID: 242998577}
+  shield: {fileID: 1558497947}
+  bomb: {fileID: 1851100182}
 --- !u!4 &555101799
 Transform:
   m_ObjectHideFlags: 0

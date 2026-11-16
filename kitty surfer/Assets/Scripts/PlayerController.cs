@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform followCamera;
 
     private const float FullSpeedDistance = 1350f;
-    private const float MaxSpeed = 10f;
+    private const float MaxSpeed = 12f;
 
     private Rigidbody body;
     private float centerLaneX;

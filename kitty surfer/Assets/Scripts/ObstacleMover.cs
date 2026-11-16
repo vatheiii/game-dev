@@ -25,10 +25,4 @@ public class ObstacleMover : MonoBehaviour
         target.x += Mathf.PingPong(elapsed * slideSpeed, travelDistance);
         body.MovePosition(trackSection.TransformPoint(target));
     }
-
-    public void ResetForRecycle()
-    {
-        elapsed = 0f;
-        body.position = trackSection.TransformPoint(startLocalPosition);
-    }
 }

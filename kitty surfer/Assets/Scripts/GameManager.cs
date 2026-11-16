@@ -114,8 +114,15 @@ public class GameManager : MonoBehaviour
 
     private void TakeHit()
     {
-        if (IsShieldActive || Time.time < nextDamageTime)
+        if (Time.time < nextDamageTime)
             return;
+
+        if (IsShieldActive)
+        {
+            shieldEndTime = 0f;
+            RefreshPowerUps();
+            return;
+        }
 
         lives--;
         nextDamageTime = Time.time + HitCooldown;

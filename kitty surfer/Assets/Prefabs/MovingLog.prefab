@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::ObstacleMover
   travelDistance: 3.075
-  slideSpeed: 2
+  slideSpeed: 2.6
 --- !u!1 &1243700010
 GameObject:
   m_ObjectHideFlags: 0
